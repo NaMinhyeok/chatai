@@ -66,25 +66,27 @@ spring.config.activate.on-profile: production
 spring:
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: false
         show_sql: false
+  h2:
+    console:
+      enabled: false  # production에서는 콘솔 비활성화
   datasource:
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: org.h2.Driver
     hikari:
-      jdbc-url: ${DATABASE_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+      jdbc-url: jdbc:h2:mem:chatai_prod;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
 
 # Production OpenAI 설정 (환경변수에서 로드)
 openai:
   api-key: ${OPENAI_API_KEY}
-  model: ${OPENAI_MODEL:gpt-3.5-turbo}
+  model: ${OPENAI_MODEL:gpt-4}
 
 logging:
   level:
-    io.github.chatai: WARN
+    io.github.chatai: INFO
     org.springframework: WARN
     org.hibernate: WARN

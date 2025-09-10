@@ -37,4 +37,21 @@ class Chat(
             )
         }
     }
+    
+    /**
+     * 이 대화를 OpenAI 메시지 형식으로 변환합니다.
+     * 사용자 질문과 어시스턴트 답변을 순서대로 반환합니다.
+     */
+    fun toOpenAIMessages(): List<io.github.chatai.chat.application.OpenAIMessage> {
+        return listOf(
+            io.github.chatai.chat.application.OpenAIMessage(
+                role = io.github.chatai.chat.application.MessageRole.USER,
+                content = question
+            ),
+            io.github.chatai.chat.application.OpenAIMessage(
+                role = io.github.chatai.chat.application.MessageRole.ASSISTANT,
+                content = answer
+            )
+        )
+    }
 }

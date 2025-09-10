@@ -9,6 +9,15 @@ spring:
     properties:
       hibernate.default_batch_fetch_size: 100
 
+# OpenAI 설정 (개발용 기본값)
+openai:
+  api-key: ${OPENAI_API_KEY:mock-api-key}
+  model: ${OPENAI_MODEL:gpt-3.5-turbo}
+
+logging:
+  level:
+    io.github.chatai: DEBUG
+
 ---
 spring.config.activate.on-profile: local
 
@@ -31,3 +40,51 @@ spring:
 
 ---
 spring.config.activate.on-profile: dev
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      jdbc-url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/chatai_dev}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:password}
+
+logging:
+  level:
+    io.github.chatai: INFO
+
+---
+spring.config.activate.on-profile: production
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      jdbc-url: ${DATABASE_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+# Production OpenAI 설정 (환경변수에서 로드)
+openai:
+  api-key: ${OPENAI_API_KEY}
+  model: ${OPENAI_MODEL:gpt-3.5-turbo}
+
+logging:
+  level:
+    io.github.chatai: WARN
+    org.springframework: WARN
+    org.hibernate: WARN

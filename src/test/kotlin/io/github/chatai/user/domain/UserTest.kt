@@ -1,0 +1,69 @@
+package io.github.chatai.user.domain
+
+import io.github.chatai.util.TimeProvider
+import org.assertj.core.api.BDDAssertions.*
+import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
+
+class UserTest {
+
+    class StubPasswordEncoder : PasswordEncoder {
+        override fun encode(rawPassword: String): String {
+            return "encoded-$rawPassword"
+        }
+
+        override fun matches(rawPassword: String, encodedPassword: String): Boolean {
+            return encodedPassword == encode(rawPassword)
+        }
+    }
+
+    class TestTimeProvider : TimeProvider {
+        override fun now() = LocalDateTime.of(2025, 9, 10, 0, 0)
+    }
+
+    @Test
+    fun `회원가입을 하면 유저가 생성된다`() {
+        // given
+        // when
+        val user = User.signUp(
+            email = "minhyeok@gmail.com",
+            password = "password",
+            name = "민혁",
+            encoder = StubPasswordEncoder(),
+            timeProvider = TestTimeProvider()
+        )
+        // then
+        then(user).isNotNull()
+    }
+
+    @Test
+    fun `회원가입을 진행하면 권한은 멤버이다`() {
+        // given
+        // when
+        val user = User.signUp(
+            email = "minhyeok@gmail.com",
+            password = "password",
+            name = "민혁",
+            encoder = StubPasswordEncoder(),
+            timeProvider = TestTimeProvider()
+        )
+        // then
+        then(user.role).isEqualTo(Role.MEMBER)
+    }
+
+    @Test
+    fun `회원가입을 할 때 비밀번호는 평문으로 저장되어선 안된다`() {
+        // given
+        // when
+        val userInputPassword = "password"
+        val user = User.signUp(
+            email = "minhyeok@gmail.com",
+            password = userInputPassword,
+            name = "민혁",
+            encoder = StubPasswordEncoder(),
+            timeProvider = TestTimeProvider()
+        )
+        // then
+        then(user.password).isNotEqualTo(userInputPassword)
+    }
+}

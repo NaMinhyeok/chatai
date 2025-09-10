@@ -2,14 +2,27 @@ package io.github.chatai.chat.domain
 
 import io.github.chatai.user.domain.User
 import io.github.chatai.util.TimeProvider
+import jakarta.persistence.*
 import java.time.Duration
 import java.time.LocalDateTime
 
+@Table(name = "threads")
+@Entity
 class Thread(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     val user: User,
+    
+    @Column(name = "created_at")
     val createdAt: LocalDateTime,
+    
+    @Column(name = "updated_at")
     val updatedAt: LocalDateTime,
+    
+    @OneToMany(mappedBy = "thread", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     val messages: List<Chat> = emptyList()
 ) {
 

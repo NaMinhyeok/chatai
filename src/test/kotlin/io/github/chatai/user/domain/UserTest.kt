@@ -3,16 +3,17 @@ package io.github.chatai.user.domain
 import io.github.chatai.util.TimeProvider
 import org.assertj.core.api.BDDAssertions.*
 import org.junit.jupiter.api.Test
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 
 class UserTest {
 
     class StubPasswordEncoder : PasswordEncoder {
-        override fun encode(rawPassword: String): String {
+        override fun encode(rawPassword: CharSequence?): String? {
             return "encoded-$rawPassword"
         }
 
-        override fun matches(rawPassword: String, encodedPassword: String): Boolean {
+        override fun matches(rawPassword: CharSequence?, encodedPassword: String?): Boolean {
             return encodedPassword == encode(rawPassword)
         }
     }

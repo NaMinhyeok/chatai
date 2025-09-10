@@ -1,7 +1,7 @@
 package io.github.chatai.user.domain
 
 import io.github.chatai.util.TimeProvider
-import org.springframework.data.auditing.DateTimeProvider
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 
 class User(
@@ -41,9 +41,4 @@ class User(
 enum class Role {
     MEMBER,
     ADMIN
-}
-
-interface PasswordEncoder {
-    fun encode(rawPassword: String): String
-    fun matches(rawPassword: String, encodedPassword: String): Boolean
 }

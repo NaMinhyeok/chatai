@@ -32,6 +32,10 @@ class User(
             )
         }
     }
+
+    fun signIn(rawPassword: String, encoder: PasswordEncoder): Boolean {
+        return encoder.matches(rawPassword, this.password)
+    }
 }
 
 enum class Role {

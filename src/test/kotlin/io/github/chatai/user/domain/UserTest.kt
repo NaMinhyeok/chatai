@@ -66,4 +66,38 @@ class UserTest {
         // then
         then(user.password).isNotEqualTo(userInputPassword)
     }
+
+    @Test
+    fun `입력받은 패스워드의 해독 결과가 일치하면 로그인 성공한다`() {
+        // given
+        val rawPassword = "password"
+        val user = User.signUp(
+            email = "minhyeok@gmail.com",
+            password = rawPassword,
+            name = "민혁",
+            encoder = StubPasswordEncoder(),
+            timeProvider = TestTimeProvider()
+        )
+        // when
+        val loginResult = user.signIn(rawPassword, StubPasswordEncoder())
+        // then
+        then(loginResult).isTrue()
+    }
+
+    @Test
+    fun `등록된 비밀번호와 다른 비밀번호를 입력하면 로그인에 실패한다`() {
+        // given
+        val rawPassword = "password"
+        val user = User.signUp(
+            email = "minhyeok@gmail.com",
+            password = rawPassword,
+            name = "민혁",
+            encoder = StubPasswordEncoder(),
+            timeProvider = TestTimeProvider()
+        )
+        // when
+        val loginResult = user.signIn("wrong-password", StubPasswordEncoder())
+        // then
+        then(loginResult).isFalse()
+    }
 }

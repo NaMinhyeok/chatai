@@ -90,3 +90,66 @@ logging:
     io.github.chatai: INFO
     org.springframework: WARN
     org.hibernate: WARN
+
+---
+spring.config.activate.on-profile: samsung
+
+client:
+  name: samsung
+
+# 삼성 전용 OpenAI 설정
+clients:
+  samsung:
+    openai:
+      api-key: ${SAMSUNG_OPENAI_API_KEY:sk-samsung-specific-key-here}
+      model: gpt-4-turbo
+      base-url: https://api.openai.com/v1/chat/completions
+
+logging:
+  level:
+    io.github.chatai: DEBUG
+
+server:
+  port: 8080
+
+---
+spring.config.activate.on-profile: lg
+
+client:
+  name: lg
+
+# LG 전용 OpenAI 설정
+clients:
+  lg:
+    openai:
+      api-key: ${LG_OPENAI_API_KEY:sk-lg-specific-key-here}
+      model: gpt-3.5-turbo
+      base-url: https://api.openai.com/v1/chat/completions
+
+logging:
+  level:
+    io.github.chatai: INFO
+
+server:
+  port: 8081
+
+---
+spring.config.activate.on-profile: sk
+
+client:
+  name: sk
+
+# SK 전용 OpenAI 설정
+clients:
+  sk:
+    openai:
+      api-key: ${SK_OPENAI_API_KEY:sk-sk-telecom-key-here}
+      model: gpt-4
+      base-url: https://api.openai.com/v1/chat/completions
+
+logging:
+  level:
+    io.github.chatai: WARN
+
+server:
+  port: 8082

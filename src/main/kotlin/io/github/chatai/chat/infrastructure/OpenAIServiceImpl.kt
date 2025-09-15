@@ -4,9 +4,7 @@ import io.github.chatai.chat.application.MessageRole
 import io.github.chatai.chat.application.OpenAIMessage
 import io.github.chatai.chat.application.OpenAIService
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 
@@ -17,26 +15,19 @@ import org.springframework.web.client.RestClient
 @Service
 @Profile("production")
 class OpenAIServiceImpl(
-    @Value("\${openai.api-key}") private val apiKey: String,
-    @Value("\${openai.model:gpt-4}") private val model: String
+    private val openAIConfig: OpenAIConfig,
+    private val restClient: RestClient
 ) : OpenAIService {
-    
-    private val logger = LoggerFactory.getLogger(OpenAIServiceImpl::class.java)
-    private val openaiUrl = "https://api.openai.com/v1/chat/completions"
 
-    private val restClient = RestClient.builder()
-        .baseUrl(openaiUrl)
-        .defaultHeader("Authorization", "Bearer $apiKey")
-        .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        .build()
+    private val logger = LoggerFactory.getLogger(OpenAIServiceImpl::class.java)
 
     override fun generateResponse(messages: List<OpenAIMessage>): String {
-        logger.info("OpenAI API 호출 시작 - model: $model, messages: ${messages.size}개")
+        logger.info("OpenAI API 호출 시작 - model: ${openAIConfig.model}, messages: ${messages.size}개")
 
         try {
             // OpenAI API 요청 바디 구성
             val requestBody = mapOf(
-                "model" to model,
+                "model" to openAIConfig.model,
                 "messages" to messages.map { message ->
                     mapOf(
                         "role" to when(message.role) {
